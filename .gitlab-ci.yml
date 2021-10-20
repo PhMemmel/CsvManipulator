@@ -1,0 +1,106 @@
+image: openjdk:11-jdk
+
+stages:
+  - build
+  - test
+  - doc
+
+before_script:
+  #  - echo `pwd` # debug
+  #  - echo "$CI_BUILD_NAME, $CI_BUILD_REF_NAME $CI_BUILD_STAGE" # debug
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - chmod +x ./gradlew
+  # only needed for (headless) testing with testfx framework:
+  # - apt-get update && apt-get install -y libgtk2.0-0
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+build:
+  stage: build
+  script:
+    - ./gradlew javaFxJar
+  artifacts:
+    paths:
+      - releases
+    expire_in: 1 week
+  only:
+    - master
+
+# Use `gradlew check --continue` locally to run all tests defined in build.gradle
+junit:
+  stage: test
+  script:
+    - ./gradlew test
+  cache:
+    policy: pull
+  artifacts:
+    paths:
+      - 'test-reports/tests/test'
+
+spotless:
+  stage: test
+  script:
+    - ./gradlew spotlessJavaCheck
+
+checkstyle:app:
+  stage: test
+  script:
+    - ./gradlew checkstyleMain
+  cache:
+    policy: pull
+  artifacts:
+    paths:
+      - 'test-reports/checkstyle'
+
+checkstyle:tests:
+  stage: test
+  script:
+    - ./gradlew checkstyleTest
+  cache:
+    policy: pull
+  artifacts:
+    paths:
+      - 'test-reports/checkstyle'
+
+spotbugs:app:
+  stage: test
+  script:
+    - ./gradlew spotbugsMain
+  cache:
+    policy: pull
+  artifacts:
+    paths:
+      - 'test-reports/spotbugs'
+
+spotbugs:tests:
+  stage: test
+  script:
+    - ./gradlew spotbugsTest
+  cache:
+    policy: pull
+  artifacts:
+    paths:
+      - 'test-reports/spotbugs'
+
+jacoco:tests:
+  stage: test
+  script:
+    - ./gradlew jacocoTestReport
+  cache:
+    policy: pull
+  artifacts:
+    paths:
+      - 'test-reports/jacoco'
+
+javadoc:doc:
+  stage: doc
+  script:
+    - ./gradlew javadoc
+  cache:
+    policy: pull
+  artifacts:
+    paths:
+      - 'doc'
