@@ -13,11 +13,10 @@ public class CsvDataManager {
   FileImporter fileImporter;
 
   private CsvDataManager() {
-    loadFile();
   }
 
-  private void loadFile() {
-    fileImporter = new FileImporter("/Adressen.csv");
+  public void loadFile(String filePath) {
+    fileImporter = new FileImporter(filePath);
   }
 
   public static CsvDataManager getInstance() {
