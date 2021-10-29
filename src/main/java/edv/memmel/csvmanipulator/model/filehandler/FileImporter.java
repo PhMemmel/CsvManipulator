@@ -27,10 +27,9 @@ public class FileImporter {
   public FileImporter(String fileNameToRead) {
     this.fileNameToRead = fileNameToRead;
     lines = new ArrayList<>();
-    readInLines();
   }
 
-  private void readInLines() {
+  public void readInLines() {
     File wordsFile =
         new File(Objects.requireNonNull(getClass().getResource(fileNameToRead)).getFile());
     BufferedReader bufferedFileReader;

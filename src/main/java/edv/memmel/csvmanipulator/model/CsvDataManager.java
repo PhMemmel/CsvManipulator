@@ -25,6 +25,7 @@ public class CsvDataManager {
 
   public void loadFile(String filePath) {
     fileImporter = new FileImporter(filePath);
+    fileImporter.readInLines();
     lineList = fileImporter.getLineList();
     propertyChangeSupport.firePropertyChange(LIST_UPDATED, null, null);
   }

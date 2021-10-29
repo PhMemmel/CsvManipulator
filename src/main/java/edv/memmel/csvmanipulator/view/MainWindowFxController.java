@@ -4,6 +4,7 @@ import edv.memmel.csvmanipulator.model.CsvDataManager;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -32,15 +33,15 @@ public class MainWindowFxController implements PropertyChangeListener {
 
   @FXML
   void triggerFileLoad() {
-    csvDataManager.loadFile(fileNameTextField.getText());
+    new Thread(() -> csvDataManager.loadFile(fileNameTextField.getText())).start();
   }
 
   private void rebuildViewCsvList() {
     List<String> stringList = CsvDataManager.getInstance().getCsvFileLines();
-    rowBox.getChildren().clear();
+    Platform.runLater(() -> rowBox.getChildren().clear());
     for (String line : stringList) {
       Label stringLabel = new Label(line);
-      rowBox.getChildren().add(stringLabel);
+      Platform.runLater(() -> rowBox.getChildren().add(stringLabel));
     }
   }
 
