@@ -1,6 +1,8 @@
 package edv.memmel.csvmanipulator.model;
 
 import edv.memmel.csvmanipulator.model.filehandler.FileImporter;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -8,16 +10,23 @@ import java.util.stream.Collectors;
 /** Main data manager class to handle all the csv data. */
 public class CsvDataManager {
 
+
   private static final CsvDataManager instance = new CsvDataManager();
+  private static final String LIST_UPDATED = "listUpdated";
+
+  private PropertyChangeSupport propertyChangeSupport;
 
   private FileImporter fileImporter;
   private List<List<String>> lineList;
 
-  private CsvDataManager() {}
+  private CsvDataManager() {
+    propertyChangeSupport = new PropertyChangeSupport(this);
+  }
 
   public void loadFile(String filePath) {
     fileImporter = new FileImporter(filePath);
     lineList = fileImporter.getLineList();
+    propertyChangeSupport.firePropertyChange(LIST_UPDATED, null, null);
   }
 
   public static CsvDataManager getInstance() {
@@ -43,6 +52,14 @@ public class CsvDataManager {
       newList.add(line.stream().map(item -> "\"" + item + "\"").collect(Collectors.toList()));
     }
     lineList = newList;
-    lineList.forEach(item -> System.out.println(item));
+    propertyChangeSupport.firePropertyChange(LIST_UPDATED, null, null);
+  }
+
+  public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+    propertyChangeSupport.addPropertyChangeListener(propertyChangeListener);
+  }
+
+  public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+    propertyChangeSupport.removePropertyChangeListener(propertyChangeListener);
   }
 }
