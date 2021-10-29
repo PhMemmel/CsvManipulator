@@ -24,6 +24,7 @@
          <children>
             <TextField fx:id="fileNameTextField" />
             <Button mnemonicParsing="false" onAction="#triggerFileLoad" text="Load File" />
+            <Button mnemonicParsing="false" onAction="#addQuotes" text="Add Quotes" />
          </children>
       </HBox>
    </bottom>

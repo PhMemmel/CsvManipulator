@@ -7,14 +7,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /** FileParser class. Parses a file and stores its content in a Set. */
 public class FileImporter {
 
   private String fileNameToRead;
-  private List<String> lines;
+  private List<List<String>> lines;
 
   /**
    * FileImporter class.
@@ -47,7 +49,9 @@ public class FileImporter {
     try {
       while (bufferedFileReader.ready()) {
         tmp = bufferedFileReader.readLine();
-        lines.add(tmp);
+        // List<String> line = Arrays.asList(tmp.trim().split(";"));
+        List<String> line = Arrays.stream(tmp.trim().split(";")).collect(Collectors.toList());
+        lines.add(line);
         // debug output:
         System.out.println("Read line: " + tmp);
       }
@@ -73,7 +77,7 @@ public class FileImporter {
     }
   }
 
-  public List<String> getLineList() {
+  public List<List<String>> getLineList() {
     return lines;
   }
 }

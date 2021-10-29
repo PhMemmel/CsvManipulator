@@ -37,4 +37,9 @@ public class MainWindowFxController {
       rowBox.getChildren().add(stringLabel);
     }
   }
+
+  @FXML
+  void addQuotes() {
+    csvDataManager.addQuotes();
+  }
 }
